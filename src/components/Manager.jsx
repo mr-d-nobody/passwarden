@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const Manager = () => {
-  const imgRef = useRef();
   const passwordRef = useRef();
+  const [show, setShow] = useState(false);
 
   const [form, setForm] = useState({ site: "", username: "", password: "" });
   const [passwordArray, setPasswordArray] = useState([]);
@@ -14,13 +15,13 @@ const Manager = () => {
   }, []);
 
   const showPassword = () => {
-    if (imgRef.current.src.includes("/e.png")) {
-      imgRef.current.src = "/icons.png";
-      passwordRef.current.type = "text";
-    } else {
-      imgRef.current.src = "/e.png";
-      passwordRef.current.type = "password";
-    }
+    setShow((prev) => {
+      const newState = !prev;
+      if (passwordRef.current) {
+        passwordRef.current.type = newState ? "text" : "password";
+      }
+      return newState;
+    });
   };
 
   const savePassword = () => {
@@ -58,14 +59,14 @@ const Manager = () => {
   };
 
   return (
-    
     <div className="max-w-6xl mx-auto h-full flex flex-col">
-      {/* Heading & Form */}
+      {/* Heading */}
       <div className="text-center mt-4 mb-4">
         <h1 className="text-2xl font-bold">PassWarden</h1>
         <p className="text-gray-400 text-sm">Your own Password Manager</p>
       </div>
 
+      {/* Form */}
       <div className="flex flex-col items-center gap-4 mb-4 px-4">
         <input
           type="text"
@@ -95,13 +96,14 @@ const Manager = () => {
               className="w-full rounded-full bg-neutral-800 border border-gray-600 text-white px-4 py-2 pr-10"
             />
             <span
-              className="absolute right-3 top-2 cursor-pointer"
+              className="absolute right-3 top-2 cursor-pointer text-white"
               onClick={showPassword}
             >
-              <img ref={imgRef} src="/icons.png" alt="toggle" width={24} />
+              {show ? <EyeOff size={20} /> : <Eye size={20} />}
             </span>
           </div>
         </div>
+
         <button
           className="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-full text-white text-sm"
           onClick={savePassword}
@@ -125,23 +127,46 @@ const Manager = () => {
           <tbody>
             {passwordArray.length > 0 ? (
               passwordArray.map((item, index) => (
-                <tr key={index} className="border-t border-neutral-700 hover:bg-neutral-700">
+                <tr
+                  key={index}
+                  className="border-t border-neutral-700 hover:bg-neutral-700"
+                >
                   <td className="px-4 py-2">
-                    <a href={item.site} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline">
+                    <a
+                      href={item.site}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
                       {item.site}
                     </a>
                   </td>
                   <td className="px-4 py-2">{item.username}</td>
                   <td className="px-4 py-2">{item.password}</td>
                   <td className="px-4 py-2 space-x-2">
-                    <button onClick={() => handleEdit(index)} className="text-blue-400 hover:underline text-sm">Edit</button>
-                    <button onClick={() => handleDelete(index)} className="text-red-500 hover:underline text-sm">Delete</button>
+                    <button
+                      onClick={() => handleEdit(index)}
+                      className="text-blue-400 hover:underline text-sm"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(index)}
+                      className="text-red-500 hover:underline text-sm"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="text-center py-4 text-gray-400">No passwords saved yet.</td>
+                <td
+                  colSpan="4"
+                  className="text-center py-4 text-gray-400"
+                >
+                  No passwords saved yet.
+                </td>
               </tr>
             )}
           </tbody>
