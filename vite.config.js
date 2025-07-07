@@ -1,7 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-// https://vite.dev/config/
+
+// 🔁 Add your GitHub repo name here
+const repoName = 'passwarden'
+
 export default defineConfig({
-  plugins: [react(),tailwindcss()],
+  base: `/${repoName}/`,  // 👈 ensures paths work on GitHub Pages
+  plugins: [react(), tailwindcss()],
 })
